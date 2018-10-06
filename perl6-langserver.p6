@@ -55,6 +55,12 @@ loop {
         when 'textDocument/didOpen' {
           text-document-did-open($request<params>);
         }
+        when 'textDocument/didSave' {
+          text-document-did-save($request<params>);
+        }
+        when 'textDocument/didChange' {
+          text-document-did-change($request<params>);
+        }
         when 'textDocument/didClose' {
           text-document-did-close($request<params>);
         }
@@ -89,11 +95,12 @@ sub send-json-response($id, $result) {
 
 sub send-json-request($method, %params) {
   my %request = %(
-    jsonrpc => "2.0",
-    method   => $method,
+    jsonrpc  => "2.0",
+    'method' => $method,
     params   => %params,
   );
   my $json-request = to-json(%request, :!pretty);
+  debug-log(to-json(%request, :pretty));
   my $content-length = $json-request.chars;
   my $request = "Content-Length: $content-length\r\n\r\n$json-request\r\n";
   print($request);
@@ -130,32 +137,59 @@ sub text-document-did-open(%params) {
   %text-documents{%text-document<uri>} = %text-document;
   debug-log(%text-documents.perl);
 
-  # start {
-  # 	#TODO we need some lock protection
-  # 
-  #   my @errors;
-  #   push @errors, %(
-  #     range => %(
-  #       start => %(
-  #         line => 1,
-  #         character => 0
-  #       ),
-  #       end   => %(
-  #         line => 1,
-  #         character => 0
-  #       ),
-  #     ),
-  #     # severity => 1,
-  #     source  => 'perl6 -c',
-  #     message => "Some weird Perl 6 Error message!",
-  #   );
-  # 
-  #   my %params = %(
-  #     uri         => %text-document<uri>,
-  #     diagnostics => @errors,
-  #   );
-  #   send-json-request('textDocument/publishDiagnostics', %params);
-  # };
+  publish-diagnostics(%text-document<uri>);
+}
+
+sub publish-diagnostics($uri) {
+  
+	#TODO we need some lock protection
+
+  my @errors;
+  @errors.push: %(
+    range => {
+      start => {
+        line => 1,
+        character => 0
+      },
+      end   => {
+        line => 1,
+        character => 0
+      },
+    },
+    # TODO see DiagnosticSeverity 1 => ERROR
+    severity => 1,
+    source  => 'perl6 -c',
+    message => "Some weird Perl 6 Error message!",
+  );
+
+  my %parameters = %(
+    uri         => $uri,
+    diagnostics => @errors,
+  );
+  send-json-request('textDocument/publishDiagnostics', %parameters);
+}
+
+
+sub text-document-did-save(%params) {
+  debug-log("\c[Bell]: text-document-did-save({%params.perl})");
+  debug-log("-" x 80);
+
+  my %text-document = %params<textDocument>;
+
+  publish-diagnostics(%text-document<uri>);
+
+  return;
+}
+
+sub text-document-did-change(%params) {
+  debug-log("\c[Bell]: text-document-did-change{%params.perl})");
+  debug-log("-" x 80);
+  #TODO update textDocument with contentChanges
+  my %text-document = %params<textDocument>;
+  # %text-documents{%text-document<uri>} = %text-document;
+  # debug-log(%text-documents.perl);
+
+  publish-diagnostics(%text-document<uri>);
 
   return;
 }
