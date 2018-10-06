@@ -10,6 +10,8 @@ my $debug-file-name = $*SPEC.catdir(
 );
 my $debug-file = $debug-file-name.IO.open(:w);
 
+my %text-documents;
+
 debug-log("🙂: Starting perl6-langserver... Reading/writing stdin/stdout.");
 
 my $initialized = False;
@@ -42,13 +44,16 @@ loop {
       #TODO throw an exception if a method is called before $initialized = True
       given $method {
         when 'initialize' {
-          initialize($request<params>);
-          send-json-response($id, %());
+          my $result = initialize($request<params>);
+          send-json-response($id, $result);
         }
         when 'initialized' {
           # Initialization done
           debug-log("🙂: Initialized handshake!");
           $initialized = True;
+        }
+        when 'textDocument/didOpen' {
+          text-document-did-open($request<params>);
         }
         when 'shutdown' {
           # Client requested server graceful shutdown
@@ -72,9 +77,9 @@ sub send-json-response($id, $result) {
     id       => $id,
     result   => $result,
   );
-  my $json-response = to-json(%response);
+  my $json-response = to-json(%response, :!pretty);
   my $content-length = $json-response.chars;
-  my $response = "Content-Length: $content-length\r\n\r\n$json-response";
+  my $response = "Content-Length: $content-length\r\n\r\n$json-response\r\n";
   print($response);
   debug-log("\c[BELL]: {$response.perl}");
 }
@@ -82,6 +87,31 @@ sub send-json-response($id, $result) {
 sub initialize(%params) {
   debug-log("\c[Bell]: initialize({%params.perl})");
   debug-log("-" x 80);
+  %(
+    capabilities => {
+      # TextDocumentSyncKind.Full
+      # Documents are synced by always sending the full content of the document.
+      textDocumentSync => 1,
+    }
+  )
+#%(
+  # capabilities => %(
+  #   textDocument => %(
+  #     synchronization => %(
+  #       didSave => 1
+  #     )
+  #   )
+  # )
+#)
+}
+
+sub text-document-did-open(%params) {
+  debug-log("\c[Bell]: text-document-did-open({%params.perl})");
+  debug-log("-" x 80);
+  my %text-document = %params<textDocument>;
+  %text-documents{%text-document<uri>} = %text-document;
+  debug-log(%text-documents.perl);
+  return;
 }
 
 sub shutdown {
