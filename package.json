@@ -1,0 +1,16 @@
+{
+  "name": "perl6-atom-language-client",
+  "main": "./lib/main",
+  "version": "0.0.1",
+  "description": "Perl 6 Atom Language Client",
+  "keywords": [
+  ],
+  "repository": "https://github.com/azawawi/perl6-atom-language-client",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+    "atom-languageclient": "^0.8.3"
+  }
+}
