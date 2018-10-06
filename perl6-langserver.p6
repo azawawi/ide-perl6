@@ -2,10 +2,10 @@
 
 use v6;
 use JSON::Fast;
-use Data::Dump;
 
 my $debug-file-name = $*SPEC.catdir(
   $?FILE.IO.parent,
+  "..",
   "perl6-langserver.log"
 );
 my $debug-file = $debug-file-name.IO.open(:w);
@@ -39,8 +39,8 @@ loop {
       my $request = from-json($json);
       my $id      = $request<id>;
       my $method  = $request<method>;
-      debug-log("\c[BELL]: {Dump($request, :!color)}");
-      
+      debug-log("\c[BELL]: {$request.perl}");
+
       #TODO throw an exception if a method is called before $initialized = True
       given $method {
         when 'initialize' {
@@ -54,6 +54,9 @@ loop {
         }
         when 'textDocument/didOpen' {
           text-document-did-open($request<params>);
+        }
+        when 'textDocument/didClose' {
+          text-document-did-close($request<params>);
         }
         when 'shutdown' {
           # Client requested server graceful shutdown
@@ -84,6 +87,19 @@ sub send-json-response($id, $result) {
   debug-log("\c[BELL]: {$response.perl}");
 }
 
+sub send-json-request($method, %params) {
+  my %request = %(
+    jsonrpc => "2.0",
+    method   => $method,
+    params   => %params,
+  );
+  my $json-request = to-json(%request, :!pretty);
+  my $content-length = $json-request.chars;
+  my $request = "Content-Length: $content-length\r\n\r\n$json-request\r\n";
+  print($request);
+  debug-log("\c[BELL]: {$request.perl}");
+}
+
 sub initialize(%params) {
   debug-log("\c[Bell]: initialize({%params.perl})");
   debug-log("-" x 80);
@@ -92,17 +108,19 @@ sub initialize(%params) {
       # TextDocumentSyncKind.Full
       # Documents are synced by always sending the full content of the document.
       textDocumentSync => 1,
+      # textDocument => {
+      #   synchronization => {
+      #     didSave => 1
+      #   },
+      # },
+      workspace => {
+        applyEdit => False,
+        workspaceEdit => {
+          documentChanges => False
+        },
+      }
     }
   )
-#%(
-  # capabilities => %(
-  #   textDocument => %(
-  #     synchronization => %(
-  #       didSave => 1
-  #     )
-  #   )
-  # )
-#)
 }
 
 sub text-document-did-open(%params) {
@@ -111,6 +129,44 @@ sub text-document-did-open(%params) {
   my %text-document = %params<textDocument>;
   %text-documents{%text-document<uri>} = %text-document;
   debug-log(%text-documents.perl);
+
+  # start {
+  # 	#TODO we need some lock protection
+  # 
+  #   my @errors;
+  #   push @errors, %(
+  #     range => %(
+  #       start => %(
+  #         line => 1,
+  #         character => 0
+  #       ),
+  #       end   => %(
+  #         line => 1,
+  #         character => 0
+  #       ),
+  #     ),
+  #     # severity => 1,
+  #     source  => 'perl6 -c',
+  #     message => "Some weird Perl 6 Error message!",
+  #   );
+  # 
+  #   my %params = %(
+  #     uri         => %text-document<uri>,
+  #     diagnostics => @errors,
+  #   );
+  #   send-json-request('textDocument/publishDiagnostics', %params);
+  # };
+
+  return;
+}
+
+sub text-document-did-close(%params) {
+  debug-log("\c[Bell]: text-document-did-close({%params.perl})");
+  debug-log("-" x 80);
+  my %text-document = %params<textDocument>;
+  %text-documents{%text-document<uri>}:delete;
+  debug-log(%text-documents.perl);
+
   return;
 }
 
