@@ -40,9 +40,9 @@ loop {
   if $content-length > 0 {
       my $json    = $*IN.read($content-length).decode;
       my $request = from-json($json);
+      my $id      = $request<id>;
+      my $method  = $request<method>;
       debug-log("\c[BELL]: {Dump($request, :!color)}");
-      my $id = $request<id>;
-      my $method = $request<method>;
       
       #TODO throw an exception if a method is called before $initialized = True
       given $method {
@@ -51,10 +51,12 @@ loop {
           send-json-response($id, %());
         }
         when 'initialized' {
+          # Initialization done
           debug-log("🙂: Initialized handshake!");
           $initialized = True;
         }
         when 'shutdown' {
+          # Client requested server graceful shutdown
           shutdown;
           last;
         }
@@ -62,7 +64,7 @@ loop {
   }
 
 }
-debug-log("Perl 6 Langserver is now shutdown");
+debug-log("Perl 6 Langserver is now off.");
 
 sub send-json-response($id, $result) {
   my %response = %(
