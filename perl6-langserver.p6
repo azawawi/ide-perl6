@@ -15,8 +15,9 @@ sub debug-log($text) {
   $debug-file.flush;
 }
 
-debug-log("Starting perl6-langserver... Reading from standard input. 🙂");
+debug-log("🙂: Starting perl6-langserver... Reading/writing stdin/stdout.");
 
+my $initialized = False;
 loop {
   my %headers;
   for $*IN.lines -> $line {
@@ -39,10 +40,19 @@ loop {
   if $content-length > 0 {
       my $json    = $*IN.read($content-length).decode;
       my $request = from-json($json);
+      debug-log("\c[BELL]: {Dump($request, :!color)}");
+      my $id = $request<id>;
       my $method = $request<method>;
+      
+      #TODO throw an exception if a method is called before $initialized = True
       given $method {
         when 'initialize' {
           initialize($request<params>);
+          send-json-response($id, %());
+        }
+        when 'initialized' {
+          debug-log("🙂: Initialized handshake!");
+          $initialized = True;
         }
         when 'shutdown' {
           shutdown;
@@ -54,8 +64,21 @@ loop {
 }
 debug-log("Perl 6 Langserver is now shutdown");
 
+sub send-json-response($id, $result) {
+  my %response = %(
+    jsonrpc => "2.0",
+    id       => $id,
+    result   => $result,
+  );
+  my $json-response = to-json(%response);
+  my $content-length = $json-response.chars;
+  my $response = "Content-Length: $content-length\r\n\r\n$json-response";
+  print($response);
+  debug-log("\c[BELL]: {$response.perl}");
+}
+
 sub initialize(%params) {
-  debug-log("\c[Bell]: initialize({Dump(%params, :!color)})");
+  debug-log("\c[Bell]: initialize({%params.perl})");
   debug-log("-" x 80);
 }
 
