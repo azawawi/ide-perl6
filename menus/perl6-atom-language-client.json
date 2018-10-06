@@ -1,0 +1,26 @@
+{
+  "context-menu": {
+    "atom-text-editor": [
+      {
+        "label": "Toggle perl6-atom-language-client",
+        "command": "perl6-atom-language-client:toggle"
+      }
+    ]
+  },
+  "menu": [
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "perl6-atom-language-client",
+          "submenu": [
+            {
+              "label": "Toggle",
+              "command": "perl6-atom-language-client:toggle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

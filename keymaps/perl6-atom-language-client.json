@@ -1,0 +1,5 @@
+{
+  "atom-workspace": {
+    "ctrl-alt-o": "perl6-atom-language-client:toggle"
+  }
+}
