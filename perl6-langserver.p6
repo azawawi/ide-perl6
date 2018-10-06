@@ -2,6 +2,7 @@
 
 use v6;
 use JSON::Fast;
+use Data::Dump;
 
 my $debug-file-name = $*SPEC.catdir(
   $?FILE.IO.parent,
@@ -14,10 +15,12 @@ sub debug-log($text) {
   $debug-file.flush;
 }
 
+debug-log("Starting perl6-langserver... Reading from standard input. 🙂");
+
 loop {
   my %headers;
   for $*IN.lines -> $line {
-    debug-log("Client: {$line.perl}");
+    debug-log("\c[Bell]: {$line.perl}");
 
     # we're done here
     last if $line eq '';
@@ -36,7 +39,27 @@ loop {
   if $content-length > 0 {
       my $json    = $*IN.read($content-length).decode;
       my $request = from-json($json);
-      debug-log("Client: {to-json($request, :pretty)}");
+      my $method = $request<method>;
+      given $method {
+        when 'initialize' {
+          initialize($request<params>);
+        }
+        when 'shutdown' {
+          shutdown;
+          last;
+        }
+      }
   }
 
+}
+debug-log("Perl 6 Langserver is now shutdown");
+
+sub initialize(%params) {
+  debug-log("\c[Bell]: initialize({Dump(%params, :!color)})");
+  debug-log("-" x 80);
+}
+
+sub shutdown {
+  debug-log("\c[Bell]: shutdown called, cya 👋");
+  debug-log("-" x 80);
 }
