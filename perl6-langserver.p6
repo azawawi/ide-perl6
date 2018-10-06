@@ -10,11 +10,6 @@ my $debug-file-name = $*SPEC.catdir(
 );
 my $debug-file = $debug-file-name.IO.open(:w);
 
-sub debug-log($text) {
-  $debug-file.say($text);
-  $debug-file.flush;
-}
-
 debug-log("🙂: Starting perl6-langserver... Reading/writing stdin/stdout.");
 
 my $initialized = False;
@@ -65,6 +60,11 @@ loop {
 
 }
 debug-log("Perl 6 Langserver is now off.");
+
+sub debug-log($text) {
+  $debug-file.say($text);
+  $debug-file.flush;
+}
 
 sub send-json-response($id, $result) {
   my %response = %(
