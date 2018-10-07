@@ -7,7 +7,7 @@ This Language integration is built on top of [atom-languageclient](https://githu
 
 
 ## Features:
-- Diagnostics (errors and warnings from `perl6 -c`)
+- Diagnostics (i.e. syntax check errors using `perl6 -c` )
 
 ## Plan:
 - [ ] Rename to `ide-perl6` by releasing for the public.
