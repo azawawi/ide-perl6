@@ -3,13 +3,6 @@
 use v6;
 use JSON::Fast;
 
-my $debug-file-name = $*SPEC.catdir(
-  $?FILE.IO.parent,
-  "..",
-  "perl6-langserver.log"
-);
-my $debug-file = $debug-file-name.IO.open(:w);
-
 my %text-documents;
 
 debug-log("🙂: Starting perl6-langserver... Reading/writing stdin/stdout.");
@@ -65,19 +58,19 @@ loop {
           text-document-did-close($request<params>);
         }
         when 'shutdown' {
-          # Client requested server graceful shutdown
-          shutdown;
-          last;
+          # Client requested to shutdown...
+        }
+        when 'exit' {
+          exit 0;
         }
       }
   }
 
 }
-debug-log("Perl 6 Langserver is now off.");
 
 sub debug-log($text) {
-  $debug-file.say($text);
-  $debug-file.flush;
+  $*ERR.say($text);
+  $*ERR.flush;
 }
 
 sub send-json-response($id, $result) {
@@ -100,7 +93,6 @@ sub send-json-request($method, %params) {
     params   => %params,
   );
   my $json-request = to-json(%request, :!pretty);
-  debug-log(to-json(%request, :pretty));
   my $content-length = $json-request.chars;
   my $request = "Content-Length: $content-length\r\n\r\n$json-request\r\n";
   print($request);
@@ -109,58 +101,48 @@ sub send-json-request($method, %params) {
 
 sub initialize(%params) {
   debug-log("\c[Bell]: initialize({%params.perl})");
-  debug-log("-" x 80);
   %(
     capabilities => {
       # TextDocumentSyncKind.Full
       # Documents are synced by always sending the full content of the document.
       textDocumentSync => 1,
-      # textDocument => {
-      #   synchronization => {
-      #     didSave => 1
-      #   },
-      # },
-      workspace => {
-        applyEdit => False,
-        workspaceEdit => {
-          documentChanges => False
-        },
-      }
     }
   )
 }
 
 sub text-document-did-open(%params) {
   debug-log("\c[Bell]: text-document-did-open({%params.perl})");
-  debug-log("-" x 80);
   my %text-document = %params<textDocument>;
   %text-documents{%text-document<uri>} = %text-document;
   debug-log(%text-documents.perl);
 
-  publish-diagnostics(%text-document<uri>);
+  return;
 }
 
 sub publish-diagnostics($uri) {
   
-	#TODO we need some lock protection
+  debug-log("publish-diagnostics($uri)");
+
+  #TODO we need some lock protection
 
   my @errors;
-  @errors.push: %(
+  my %error = %(
     range => {
       start => {
-        line => 1,
+        line      => 2,
         character => 0
       },
       end   => {
-        line => 1,
+        line      => 3,
         character => 0
       },
     },
     # TODO see DiagnosticSeverity 1 => ERROR
     severity => 1,
-    source  => 'perl6 -c',
-    message => "Some weird Perl 6 Error message!",
+    source   => 'perl6 -c',
+    message  => "Some weird Perl 6 Error message!",
   );
+  @errors.push(%error);
 
   my %parameters = %(
     uri         => $uri,
@@ -172,18 +154,14 @@ sub publish-diagnostics($uri) {
 
 sub text-document-did-save(%params) {
   debug-log("\c[Bell]: text-document-did-save({%params.perl})");
-  debug-log("-" x 80);
 
   my %text-document = %params<textDocument>;
-
-  publish-diagnostics(%text-document<uri>);
 
   return;
 }
 
 sub text-document-did-change(%params) {
   debug-log("\c[Bell]: text-document-did-change{%params.perl})");
-  debug-log("-" x 80);
   #TODO update textDocument with contentChanges
   my %text-document = %params<textDocument>;
   # %text-documents{%text-document<uri>} = %text-document;
@@ -196,7 +174,6 @@ sub text-document-did-change(%params) {
 
 sub text-document-did-close(%params) {
   debug-log("\c[Bell]: text-document-did-close({%params.perl})");
-  debug-log("-" x 80);
   my %text-document = %params<textDocument>;
   %text-documents{%text-document<uri>}:delete;
   debug-log(%text-documents.perl);
@@ -205,6 +182,5 @@ sub text-document-did-close(%params) {
 }
 
 sub shutdown {
-  debug-log("\c[Bell]: shutdown called, cya 👋");
-  debug-log("-" x 80);
+  #debug-log("\c[Bell]: shutdown called, cya 👋");
 }
