@@ -5,6 +5,10 @@ use JSON::Fast;
 
 my %text-documents;
 
+# No standard input/output buffering to prevent unwanted hangs/failures/waits
+$*OUT.out-buffer = False;
+$*ERR.out-buffer = False;
+
 debug-log("🙂: Starting perl6-langserver... Reading/writing stdin/stdout.");
 
 my $initialized = False;
@@ -58,7 +62,7 @@ loop {
         when 'shutdown' {
           # Client requested to shutdown...
           # debug-log("\c[Bell]: shutdown called, cya 👋");
-          send-json-response($id, {});
+          send-json-response($id, Any);
         }
         when 'exit' {
           exit 0;
@@ -70,7 +74,6 @@ loop {
 
 sub debug-log($text) {
   $*ERR.say($text);
-  $*ERR.flush;
 }
 
 sub send-json-response($id, $result) {
@@ -81,8 +84,7 @@ sub send-json-response($id, $result) {
   );
   my $json-response = to-json(%response, :!pretty);
   my $content-length = $json-response.chars;
-  my $response = "Content-Length: $content-length\r\n\r\n$json-response\r\n";
-  print($response);
+  my $response = "Content-Length: $content-length\r\n\r\n$json-response";
   # debug-log("\c[BELL]: {$response.perl}");
 }
 
@@ -94,7 +96,7 @@ sub send-json-request($method, %params) {
   );
   my $json-request = to-json(%request, :!pretty);
   my $content-length = $json-request.chars;
-  my $request = "Content-Length: $content-length\r\n\r\n$json-request\r\n";
+  my $request = "Content-Length: $content-length\r\n\r\n$json-request";
   print($request);
   debug-log("\c[BELL]: {$request}");
 }
