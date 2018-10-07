@@ -85,6 +85,7 @@ sub send-json-response($id, $result) {
   my $json-response = to-json(%response, :!pretty);
   my $content-length = $json-response.chars;
   my $response = "Content-Length: $content-length\r\n\r\n$json-response";
+  print($response);
   # debug-log("\c[BELL]: {$response.perl}");
 }
 
