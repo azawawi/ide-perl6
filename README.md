@@ -9,6 +9,8 @@ This Language integration is built on top of [atom-languageclient](https://githu
 ## Features:
 - Diagnostics (i.e. syntax check errors using `perl6 -c` )
 
+![screenshots/diagnostics-screenshot.gif](screenshots/diagnostics-screenshot.gif)
+
 ## Plan:
 - [ ] `perl6-langserver.p6` should be moved into `App::Perl6LangServer`
 - [ ] Provide a feature list similar to https://github.com/rust-lang-nursery/atom-ide-rust
