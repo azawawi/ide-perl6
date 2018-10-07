@@ -1,6 +1,7 @@
 #!/usr/bin/env perl6
 
 use v6;
+use File::Temp;
 use JSON::Fast;
 
 my %text-documents;
@@ -99,7 +100,7 @@ sub send-json-request($method, %params) {
   my $content-length = $json-request.chars;
   my $request = "Content-Length: $content-length\r\n\r\n$json-request";
   print($request);
-  debug-log("\c[BELL]: {$request}");
+  # debug-log("\c[BELL]: {$request}");
 }
 
 sub initialize(%params) {
@@ -114,7 +115,7 @@ sub initialize(%params) {
 }
 
 sub text-document-did-open(%params) {
-  debug-log("\c[Bell]: text-document-did-open");
+  # debug-log("\c[Bell]: text-document-did-open");
   my %text-document = %params<textDocument>;
   %text-documents{%text-document<uri>} = %text-document;
 
@@ -122,59 +123,76 @@ sub text-document-did-open(%params) {
 }
 
 sub publish-diagnostics($uri) {
-  
-  debug-log("publish-diagnostics($uri)");
+  # debug-log("publish-diagnostics($uri)");
 
-  #TODO we need some lock protection
+  # Create a temporary file for Perl 6 source code buffer
+	my ($file-name,$file-handle) = tempfile(:!unlink);
 
-  my @errors;
-  my %error = %(
-    range => {
-      start => {
-        line      => 2,
-        character => 0
+  # Remove temporary file when leaving lexical scope
+  LEAVE unlink $file-handle;
+
+  # Write source code and flush
+  my $source = %text-documents{$uri}<text>;
+	$file-handle.print($source);
+  $file-handle.flush;
+
+  # Invoke perl -c temp-filder
+  #TODO handle windows platform
+  my Str $output = qqx{$*EXECUTABLE -c $file-name 2>&1};
+
+  my @problems;
+  if $output !~~ /^'Syntax OK'/ &&
+    $output   ~~ m/\n(.+?)at\s.+?\:(\d+)/ {
+
+    # A syntax error occurred
+    my $message     = ~$/[0];
+    my $line-number = +$/[1];
+    @problems.push: {
+      range => {
+        start => {
+          line      => $line-number,
+          character => 0
+        },
+        end => {
+          line      => $line-number,
+          character => 0
+        },
       },
-      end   => {
-        line      => 3,
-        character => 0
-      },
-    },
-    # TODO see DiagnosticSeverity 1 => ERROR
-    severity => 1,
-    source   => 'perl6 -c',
-    message  => "Some weird Perl 6 Error message!",
-  );
-  @errors.push(%error);
+      severity => 1,
+      source   => 'perl6 -c',
+      message  => $message
+    }
+  }
 
   my %parameters = %(
     uri         => $uri,
-    diagnostics => @errors,
+    diagnostics => @problems
   );
   send-json-request('textDocument/publishDiagnostics', %parameters);
 }
 
 
 sub text-document-did-save(%params) {
-  debug-log("\c[Bell]: text-document-did-save");
+  # debug-log("\c[Bell]: text-document-did-save");
 
   my %text-document = %params<textDocument>;
+#  publish-diagnostics(%text-document<uri>);
 
   return;
 }
 
 sub text-document-did-change(%params) {
-  debug-log("\c[Bell]: text-document-did-change");
-  #TODO update textDocument with contentChanges
-  my %text-document = %params<textDocument>;
-  # %text-documents{%text-document<uri>} = %text-document;
-
-  publish-diagnostics(%text-document<uri>);
+  # debug-log("\c[Bell]: text-document-did-change");
+  my %text-document          = %params<textDocument>;
+  my $uri                    = %text-document<uri>;
+  %text-documents{$uri}<text> = %params<contentChanges>[0]<text>;
+  publish-diagnostics($uri);
 
   return;
 }
 
 sub text-document-did-close(%params) {
-  debug-log("\c[Bell]: text-document-did-close");
+  # debug-log("\c[Bell]: text-document-did-close");
   my %text-document = %params<textDocument>;
   %text-documents{%text-document<uri>}:delete;
 
