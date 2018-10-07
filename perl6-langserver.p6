@@ -59,6 +59,8 @@ loop {
         }
         when 'shutdown' {
           # Client requested to shutdown...
+          debug-log("\c[Bell]: shutdown called, cya 👋");
+          send-json-response($id, {});
         }
         when 'exit' {
           exit 0;
@@ -179,8 +181,4 @@ sub text-document-did-close(%params) {
   debug-log(%text-documents.perl);
 
   return;
-}
-
-sub shutdown {
-  #debug-log("\c[Bell]: shutdown called, cya 👋");
 }
