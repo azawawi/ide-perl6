@@ -1,12 +1,12 @@
 {
-  "name": "perl6-atom-language-client",
+  "name": "ide-perl6",
   "main": "./lib/main",
   "version": "0.0.1",
-  "description": "Perl 6 Atom Language Client",
+  "description": "Perl 6 language support for Atom-IDE",
   "keywords": [
     "langserver", "perl6"
   ],
-  "repository": "https://github.com/azawawi/perl6-atom-language-client",
+  "repository": "https://github.com/azawawi/ide-perl6",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
