@@ -15,6 +15,7 @@ This Language integration is built on top of [atom-languageclient](https://githu
 - [ ] `perl6-langserver.p6` should be moved into `App::Perl6LangServer`
 - [ ] Provide a feature list similar to https://github.com/rust-lang-nursery/atom-ide-rust
 - [ ] Auto-install `App::Perl6LangServer`
+- [ ] Support VSCode.
 
 ## Install
 
