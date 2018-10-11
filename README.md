@@ -47,6 +47,17 @@ it:
 
 Ahmad M. Zawawi, [azawawi](https://github.com/azawawi/) on #perl6.
 
+## See Also
+
+- Specification:
+  - [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification).
+  - [Language Server Protocol](https://microsoft.github.io/language-server-protocol/specification).
+- Plugin / Extension:
+  - [Perl 6 language support in Visual Studio Code](https://github.com/scriplit/vscode-languageserver-perl6).
+- Language Server:
+  - [App::LanguageServer](https://github.com/cazador481/App-LanguageServer-Perl)
+\- Perl Language Server.
+
 ## License
 
 [MIT License](LICENSE.md)
