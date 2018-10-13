@@ -1,6 +1,5 @@
 # Changelog for IDE-Perl6
 
-## 0.0.1 - It all began here :smile:
-* Initial atom plugin skeleton.
-* Initial Perl 6 language support with built `perl6-langserver.p6`.
-* Add `perl6 -c` syntax checking.
+## 0.1.0 - It all began here :smile:
+* First release with `perl6 -c` syntax checking.
+* Initial Perl 6 language server support with built-in `perl6-langserver.p6`.
