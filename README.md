@@ -28,6 +28,7 @@ This Language integration is built on top of
 - [ ] Support VSCode in another plugin.
 - [ ] Provide source code formatting via [Perl6::Tidy](
 https://github.com/drforr/perl6-Perl6-Tidy/tree/master/bin).
+- [ ] Retrofit Outline support as in [Padre::Plugin::Perl6](https://metacpan.org/source/AZAWAWI/Padre-Plugin-Perl6-0.71/lib/Padre/Plugin/Perl6/Outline.pm) with the output of `perl6 --target=ast somefile.p6`.
 
 ## Install
 
@@ -83,6 +84,8 @@ Ahmad M. Zawawi, [azawawi](https://github.com/azawawi/) on #perl6.
 \- Perl Language Server.
   - [Perl 6 language support in vscode](
     https://github.com/scriplit/vscode-languageserver-perl6) - Perl 6 language server that uses JavaScript for `perl6 -c` syntax checking.
+- Miscellaneous:
+  - [Compiler stages and targets in Perl 6](https://perl6.online/2017/12/31/compiler-stages-and-targets/).
 
 ## License
 
