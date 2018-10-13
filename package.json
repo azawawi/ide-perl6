@@ -1,10 +1,11 @@
 {
   "name": "ide-perl6",
   "main": "./lib/main",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Perl 6 language support for Atom-IDE",
   "keywords": [
-    "langserver", "perl6"
+    "langserver",
+    "perl6"
   ],
   "repository": "https://github.com/azawawi/ide-perl6",
   "license": "MIT",
