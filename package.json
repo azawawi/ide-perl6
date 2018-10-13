@@ -1,7 +1,7 @@
 {
   "name": "ide-perl6",
   "main": "./lib/main",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Perl 6 language support for Atom-IDE",
   "keywords": [
     "langserver",
