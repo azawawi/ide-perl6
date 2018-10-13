@@ -69,6 +69,7 @@ Ahmad M. Zawawi, [azawawi](https://github.com/azawawi/) on #perl6.
 - Language Server:
   - [App::LanguageServer](https://github.com/cazador481/App-LanguageServer-Perl)
 \- Perl Language Server.
+  - [Perl 6 language support in vscode] https://github.com/scriplit/vscode-languageserver-perl6.
 
 ## License
 
