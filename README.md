@@ -12,9 +12,19 @@ This Language integration is built on top of
 
 ![screenshots/diagnostics-screenshot.gif](screenshots/diagnostics-screenshot.gif)
 
-## Plan:
+## Plan / TODO:
+- [ ] Open Perl 6 downloads in browser if perl6 is not installed. (see [ide-java](https://github.com/atom/ide-java/blob/master/lib/main.js)).
+  ```
+  $ perl6 --version
+  ```
+
+- [ ] Install App::Perl6LangServer if it is not installed (see [ide-java](https://github.com/atom/ide-java/blob/master/lib/main.js)).
+
+  ```bash
+  perl6 -e "use App::Perl6LangServer:ver(v0.0.2);
+  ```
+
 - [ ] Provide a feature list similar to [atom-ide-rust](https://github.com/rust-lang-nursery/atom-ide-rust)
-- [ ] Auto-install `App::Perl6LangServer`
 - [ ] Support VSCode in another plugin.
 
 ## Install
