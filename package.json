@@ -13,8 +13,13 @@
     "atom": ">=1.21.0"
   },
   "dependencies": {
-    "atom-languageclient": "^0.9.6"
+    "atom-languageclient": "^0.9.6",
+    "atom-package-deps": "^4.6.2"
   },
+  "package-deps": [
+    "atom-ide-ui",
+    "language-perl6"
+  ],
   "consumedServices": {
     "linter-indie": {
       "versions": {
