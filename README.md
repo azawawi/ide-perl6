@@ -29,6 +29,7 @@ This Language integration is built on top of
 - [ ] Provide source code formatting via [Perl6::Tidy](
 https://github.com/drforr/perl6-Perl6-Tidy/tree/master/bin).
 - [ ] Retrofit Outline support as in [Padre::Plugin::Perl6](https://metacpan.org/source/AZAWAWI/Padre-Plugin-Perl6-0.71/lib/Padre/Plugin/Perl6/Outline.pm) with the output of `perl6 --target=ast somefile.p6`.
+- [ ] Documentation on hover as in [farabi6](https://github.com/azawawi/farabi6/blob/master/lib/Farabi6/Editor.pm6#L450) and [p6doc](https://github.com/perl6/doc/blob/master/bin/p6doc#L86).
 
 ## Install
 
