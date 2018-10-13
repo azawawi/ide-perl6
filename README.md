@@ -26,6 +26,8 @@ This Language integration is built on top of
 
 - [ ] Provide a feature list similar to [atom-ide-rust](https://github.com/rust-lang-nursery/atom-ide-rust)
 - [ ] Support VSCode in another plugin.
+- [ ] Provide source code formatting via [Perl6::Tidy](
+https://github.com/drforr/perl6-Perl6-Tidy/tree/master/bin).
 
 ## Install
 
