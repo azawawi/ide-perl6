@@ -1,5 +1,8 @@
 # Changelog for IDE-Perl6
 
+## 0.2.1
+- Fix `perl6-langserver` executable name on windows.
+
 ## 0.2.0
 - Add package dependencies:
   - [`language-perl6`](https://atom.io/packages/language-perl6) for Perl 6
