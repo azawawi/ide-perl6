@@ -10,7 +10,7 @@
   - [`atom-ide-ui`](https://atom.io/packages/atom-ide-ui) for Atom IDE services.
 - Use system-installed  [`App::Perl6LangServer`](
 https://modules.perl6.org/dist/App::Perl6LangServer:cpan:AZAWAWI) instead of bundled.
-- Update documentation for App::Perl6LangServer installation
+- Update documentation for App::Perl6LangServer installation.
 
 ## 0.1.0 - It all began here :smile:
 - First release with `perl6 -c` syntax checking.
