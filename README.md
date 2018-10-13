@@ -1,11 +1,11 @@
 # IDE-Perl6
 
 Perl 6 language support for the [Atom IDE](https://atom.io/packages/atom-ide-ui)
-powered by `perl6-langserver.p6` (`App::Perl6LangServer` in the future).
+powered by [`App::Perl6LangServer`](
+https://modules.perl6.org/dist/App::Perl6LangServer:cpan:AZAWAWI).
 
 This Language integration is built on top of
 [atom-languageclient](https://github.com/atom/atom-languageclient).
-
 
 ## Features:
 - Diagnostics (i.e. syntax check errors using `perl6 -c` )
@@ -13,16 +13,16 @@ This Language integration is built on top of
 ![screenshots/diagnostics-screenshot.gif](screenshots/diagnostics-screenshot.gif)
 
 ## Plan:
-- [ ] `perl6-langserver.p6` should be moved into `App::Perl6LangServer`
-- [ ] Provide a feature list similar to https://github.com/rust-lang-nursery/atom-ide-rust
+- [ ] Provide a feature list similar to [atom-ide-rust](https://github.com/rust-lang-nursery/atom-ide-rust)
 - [ ] Auto-install `App::Perl6LangServer`
-- [ ] Support VSCode.
+- [ ] Support VSCode in another plugin.
 
 ## Install
 
 - You can install from the command line with:
 
 ```bash
+# Install IDE-Perl6 Atom plugin
 $ apm install ide-perl6
 ```
 
@@ -33,6 +33,18 @@ Note: you need to have a working  installed Rakudo Perl 6 Compiler. You can
 install the latest monthly pre-compiled packages from
  [nxadm/rakudo-pkg](https://github.com/nxadm/rakudo-pkg) or Rakudo Star
  distribution from [here](https://rakudo.org/files).
+
+**Note:** You need also install `App::Perl6LangServer`:
+
+ ```bash
+ # To install Perl 6 language server executable.
+ $ zef install App::Perl6LangServer
+
+ # If you are using rakudobrew, this is needed to update executable path after
+ # installation.
+ $ rakudobrew rehash
+
+ ```
 
 ## Debugging
 
