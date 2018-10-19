@@ -2,6 +2,7 @@
 
 ## 0.3.0 **UNRELEASED**
   - :books: Improve documentation.
+  - :arrow_up: Bump version for `atom-languageclient` to 0.9.7 (up from 0.9.6).
 
 ## 0.2.1 - 2018-10-13
 - :bug: Fix `perl6-langserver` executable name on windows.
