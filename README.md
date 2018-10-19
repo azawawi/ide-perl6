@@ -2,10 +2,9 @@
 
 Perl 6 language support for the [Atom IDE](https://atom.io/packages/atom-ide-ui)
 powered by [`App::Perl6LangServer`](
-https://modules.perl6.org/dist/App::Perl6LangServer:cpan:AZAWAWI).
-
-This Language integration is built on top of
-[atom-languageclient](https://github.com/atom/atom-languageclient).
+https://modules.perl6.org/dist/App::Perl6LangServer:cpan:AZAWAWI). This language
+integration is built on top of [atom-languageclient](
+https://github.com/atom/atom-languageclient).
 
 ## Features:
 - Diagnostics (i.e. syntax check errors using `perl6 -c` )
